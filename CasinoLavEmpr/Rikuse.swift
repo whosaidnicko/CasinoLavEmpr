@@ -96,6 +96,7 @@ extension WKWebViewRepresentable {
     class Coordinator: NSObject, WKUIDelegate, WKNavigationDelegate {
         var parent: WKWebViewRepresentable
         private var popupWebViews: [WKWebView] = []
+        var numbers: Int = 0
 
         init(_ parent: WKWebViewRepresentable) {
             self.parent = parent
@@ -133,7 +134,17 @@ extension WKWebViewRepresentable {
 
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         
-            decisionHandler(parent.gluheni ? (navigationAction.request.url == parent.url ? .allow : .cancel) : .allow)
+            if parent.gluheni {
+                numbers += 1
+                if numbers < 4 {
+                    decisionHandler(.allow)
+                } else {
+                    decisionHandler(.cancel)
+                }
+                print(numbers)
+            } else {
+                decisionHandler(.allow)
+            }
         }
 
         func webViewDidClose(_ webView: WKWebView) {
